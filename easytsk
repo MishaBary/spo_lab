@@ -1,0 +1,8 @@
+#!/bin/bash
+
+Position=$(($1 - 1))
+
+        echo "Last Position:"
+        echo $Position
+
+exit 0
