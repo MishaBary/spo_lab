@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 up=1
 for ((c=0;c<"$1";c++))
