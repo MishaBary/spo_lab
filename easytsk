@@ -1,8 +1,7 @@
 #!/bin/bash
 
 Position=$(($1 - 1))
-
-        echo "Last Position:"
-        echo $Position
-
+  echo "Last Position:"
+  echo $Position
 exit 0
+//исправил оформление кода
