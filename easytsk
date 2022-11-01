@@ -1,5 +1,5 @@
 #!/bin/bash
-
+//последний пациент будет всегда занимать предпоследний стул(т.е N - 1)
 Position=$(($1 - 1))
   echo "Last Position:"
   echo $Position
