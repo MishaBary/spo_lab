@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#считывание строк
+read -a str1
+read -a str2
+#слияние
+str3=$str1$str2
+#сортировка строки
+echo $str3 | grep -o . | sort -u |tr -d "\n"
+echo
+exit 0
