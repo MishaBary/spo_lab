@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#read our string, enter variables
+read -a char
+set_of_char=0
+size=${#char[@]}
+#nothing in string - print "z"
+if [ $size -eq 0 ]; then
+  echo "z"
+  exit 0
+else
+  for ((i=0;i<size;i++)); do
+    NUM_in_ASCII=$(($(echo -n ${char[$i]} | od -An -tuC)-96))
+    set_of_char=$(($set_of_char + $NUM_in_ASCII))
+  done
+#we have an interval of 97-122, so NUM.. can't be < 1 or > 26 (97-96=1, 122-96=26)
+  for ((i=0;i<size;i++)); do
+    if [[ $NUM_in_ASCII -lt 1 ]] || [[ $NUM_in_ASCII -gt 26 ]]; then
+      echo "ERROR"
+      exit 0
+    fi
+  done
+#if in string "z" - set...=122(z in ascii)   
+    if [[ $(( $set_of_char % 26 )) -eq 0 ]]; then
+      set_of_char=122
+    else
+      set_of_char=$(($(($set_of_char % 26)) + 96))
+    fi
+  printf "\x$(printf %x $set_of_char)\n"
+fi
+exit 0
+#%x prints lowercase letters(hex)
+#\x characters are interpreted as hex digits for the character code
