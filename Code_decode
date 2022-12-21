@@ -1,0 +1,70 @@
+#!/bin/bash
+
+Dec_num='^[0-9]+$'
+#our nums are dec or bin, check it
+Bin_num='^[0-1]+$'
+
+#see 1 flag for our code, check 2 argument - must be an integer 
+if [[ $1 == "-code" ]]; then
+        if ! [[ $2 =~ $Dec_num ]]; then
+                echo "Mistake!!! Enter an integer"
+                exit 1
+        fi
+
+        #Output of results
+        echo "You have chosen this number : " $2
+        echo -ne "Your coded number : "
+
+        num_dec=$2
+        #sum of digits/numbers
+        sum_num="${#num_dec}"
+        
+        #there I take digit from number and give it to digit_of_num
+        # bin_digit - bin number of digit_of_num
+        #(echo "obase=2"; num_dec | bc) -  convert in binary (by bc)
+        # k is number of digits [0..1] in bin_digit
+        for (( i=0; $i < $sum_num; i++ )); do
+                digit_of_num=${num_dec:$i:1}
+                bin_digit=$(echo "obase=2; $digit_of_num" | bc)
+                k=$((${#bin_digit} - 1))
+
+                for (( j=0; j < k; j++ )); do
+                        echo -ne "0" 
+                done
+                echo -ne "1"$bin_digit
+        done
+        echo
+        exit 0
+fi
+
+#how -code
+if [[ $1 == "-decode" ]]; then
+        if ! [[ $2 =~ $Bin_num ]]; then 
+                echo "Mistake!!! Enter an integer"
+                exit 1
+        fi
+        
+        #Output of results
+        echo "You have chosen this number : " $2
+        echo -ne "Your decoded number : "
+
+        after_coding=$2
+        arr=1
+        # if number = 0 - i++, arr++ - if 1
+        # when we meet 1 we extract coded number from i on arr symbols
+        while [[ $i != ${#after_coding} ]];  do
+                if [[ ${after_coding:$i:1} == "0" ]]; then
+                        ((arr++)) ((i++))
+                else
+                        ((i++))
+                        # echo $(( base#$your_number )) returns 10_base number from your base 
+                        echo -ne $((2#${after_coding:$i:$arr}))
+                        i=$(($arr + $i))
+                        arr=1
+                fi
+        done
+        echo
+        exit 0
+fi
+#(echo "obase=2; $..." | bc) - 10_base digit_... in 2base digit_...
+#(echo "ibase=5; obase=2; $digit_..." | bc) - 5base digit_....  in 2base digit_....
