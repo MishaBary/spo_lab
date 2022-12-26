@@ -1,0 +1,64 @@
+#!/bin/bash
+
+declare num
+echo -n "Enter the number, which you want to convert:  "
+read num
+
+declare arr="$num"
+#our number can't starts from 0
+if [[ ${arr:0:1} -eq "0" ]]; then
+        echo "Mistake, check your number"
+        exit 1
+fi
+
+declare low_val=10
+declare pos=0
+declare low_val_str
+declare new_pos=$num 
+
+#there we search low val in our number
+while [ $new_pos -ne 0 ]; do
+        val=$(( $new_pos % 10 ))
+        if [[ $(( $new_pos / 10 )) -ne 0 ]] && [[ $val -lt $low_val ]]; then
+                low_val=$val
+                low_val_str=$(( $pos + 1 ))
+        fi
+        let "new_pos /= 10"
+        let "pos += 1"
+done
+
+#remember this pos in new
+low_val_str=$(( $pos - $low_val_str ))
+
+declare cout=""
+declare new_str=0
+declare if_new=false
+
+#there we compare our min num with other nums in string
+for ((i=0;i<${#arr};i++)); do
+        val=${arr:$i:1}
+        if [[ "$if_new" = false ]] && [[ $low_val -lt $val ]]; then
+                if [[ $i -eq 0 ]] && [[ $low_val -ne 0 ]]; then
+                        cout+=$low_val
+                        if_new=true
+                        new_str=$i
+                elif [[ $i -ne 0 ]]; then
+                        cout+=$low_val
+                        if_new=true
+                        new_str=$i
+                fi
+        fi
+        if [[ $i -ne $low_val_str ]]; then
+                cout+=$val
+        fi
+done
+
+#if not be add, our new == old position
+if [[ "$if_new" = false ]]; then
+        new_str=$low_val_str
+fi
+
+declare conv_num="Convert_num($num): "
+echo "$conv_num ($cout, $low_val_str, $new_str]"
+
+exit 0
