@@ -1,0 +1,68 @@
+#!/bin/bash
+
+echo -n "Write your string:  "
+read -a string
+declare -a string2
+
+#There we sort and rewrite in new substrings(substr, ..., ...)
+substr=${string[0]}
+
+for ((i=0;i<$(( ${#string[*]} - 1 ));i++)); do
+        substr2=$substr
+        substr3=${string[$(( $i + 1 ))]}
+        
+        #string(i+1) must be > string(i)
+        #else - change
+        if [[ $(( $i % 2 )) -eq 0 ]]; then
+                if [[ ${#substr2} -gt ${#substr3} ]]; then
+                        string2[$i]=$substr3
+                        substr=$substr2
+                else
+                        string2[$i]=$substr2
+                        substr=$substr3
+                fi
+        #i(odd) - string(i) > string(i+1). 
+        #else - change
+        else
+                if [[ ${#substr2} -lt ${#substr3} ]]; then
+                        string2[$i]=$substr3
+                        substr=$substr2
+                else
+                        string2[$i]=$substr2
+                        substr=$substr3
+                fi
+        fi
+done
+
+#add last char
+string2[$(( ${#string[*]} - 1 ))]=$substr
+declare -a cout
+#even char - low, uneven - high
+#we use the last let to use the ASCII
+for ((i=0;i<${#string2[*]};i++)); do
+        string_after=${string2[$i]}
+        new_string_after=""
+        if [[ $(( $i % 2 )) -eq 0 ]]; then
+                for ((j=0;j<${#string_after};j++)); do
+                        char=${string_after:$j:1}
+                        ASCII=$(echo -n $char | od -An -tuC)
+                        if [[ $ASCII -gt 64 ]] && [[ $ASCII -lt 91 ]]; then
+                                ASCII=$(( $ASCII + 32 ))
+                        fi
+                        new_string_after+=$(printf "\x$(printf %x $ASCII)")
+                done
+        else
+                for ((j=0;j<${#string_after};j++)); do
+                        char=${string_after:$j:1}
+                        ASCII=$(echo -n $char | od -An -tuC)
+                        if [[ $ASCII -gt 96 ]] && [[ $ASCII -lt 123 ]]; then
+                                ASCII=$(( $ASCII - 32 ))
+                        fi
+                        new_string_after+=$(printf "\x$(printf %x $ASCII)")
+                done
+        fi
+        cout[$i]=$new_string_after
+done
+echo ${cout[*]}
+
+exit 0
